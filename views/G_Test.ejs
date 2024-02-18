@@ -31,28 +31,73 @@
                             <!-- To make this form functional, sign up at-->
                             <!-- https://startbootstrap.com/solution/contact-forms-->
                             <!-- to get an API token!-->
-                            <form id="contactForm" data-sb-form-api-token="API_TOKEN">
+                            <form id="contactForm" 
+                                    data-sb-form-api-token="API_TOKEN"
+                                    method="GET"
+                                    action="/findUser">
                                 <div class="form-floating">
-                                    <input class="form-control" id="licensenumber" type="number" placeholder="Enter your License number" data-sb-validations="required,licensenumber" />
+                                    <input class="form-control" 
+                                            id="licensenumber" 
+                                            name="licenseNo"
+                                            type="number" 
+                                            placeholder="Enter your License number" 
+                                            data-sb-validations="required,licensenumber" />
                                     <label for="licensenumber">License Number</label>
-                                    <div class="invalid-feedback" data-sb-feedback="licensenumber:required">A license number is required.</div>
+                                    <div class="invalid-feedback" 
+                                        data-sb-feedback="licensenumber:required">A license number is required.</div>
                     
                                 </div>
                                 <!-- Submit Button-->
-                                <button class="btn btn-primary text-uppercase " id="submitButton" type="submit">Submit</button>
+                                <button class="btn btn-primary text-uppercase " 
+                                        id="submitButton" 
+                                        type="submit">Submit</button>
                             </form>
 
 
                         </div>
-
-                        <div class="ui_item">
-                            <div class="ui_item__label">Full name</div>
-                            <div class="ui_item__value"><%= data.firstname %></div>
-                          </div>
-
-                        
                     </div>
                 </div>
+
+                <!-- print results from find query only if results were found-->
+                <% if ( typeof(result) != 'undefined' && result.length > 0) { %>
+                    <table class="table table-striped">
+                    <thead>
+                        <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">First Name</th>
+                        <th scope="col">Last Name</th>
+                        <th scope="col">License No.</th>
+                        <th scope="col">Date of Birth</th>
+                        <th scope="col">Age</th>
+                        <th scope="col">Car:Make</th>
+                        <th scope="col">Car:Model</th>
+                        <th scope="col">Car:Year</th>
+                        <th scope="col">Car:Plate Number</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% result.forEach ( (user) => { %>
+                            <tr>
+                            <th scope="row"><%= user._id %></th>
+                            <td><%= user.firstname   %></td>
+                            <td><%= user.lastname    %></td>
+                            <td><%= user.licenseNo   %></td>
+                            <td><%= user.DOB         %></td>
+                            <td><%= user.age         %></td>
+                            <td><%= user.car_make    %></td>
+                            <td><%= user.car_model   %></td>
+                            <td><%= user.car_year    %></td>
+                            <td><%= user.car_plateno %></td>
+                            </tr>
+                        <% } )%>
+                    </tbody>
+                    </table>
+                <% } else if ( typeof(result) != 'undefined' && result.length == 0) { %>
+                    <div class="alert alert-danger" role="alert">
+                        License not found !
+                    </div>
+                <% } %>
+
             </div>
         </main>
         <!-- Footer-->

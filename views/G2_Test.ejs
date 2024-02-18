@@ -22,6 +22,16 @@
     <div class="container px-4 px-lg-5">
         <div class="row gx-4 gx-lg-5 justify-content-center">
             <div class="col-md-10 col-lg-8 col-xl-7">
+                <% if (typeof(user) != 'undefined')  { %></p>
+                    <div class="alert alert-success" role="alert">
+                        <%= 'New user ' + user.firstname + ' created !' %>
+                    </div>
+                <% } else if ( typeof(error) != 'undefined') { %>
+                    <div class="alert alert-danger" role="alert">
+                        <%= error %>
+                    </div>
+                <% } %>
+                <br/>
                 <p>Enter your details here</p>
                 <div class="my-5">
                     <!-- * * * * * * * * * * * * * * *-->
@@ -31,60 +41,120 @@
                     <!-- To make this form functional, sign up at-->
                     <!-- https://startbootstrap.com/solution/contact-forms-->
                     <!-- to get an API token!-->
-                    <form id="contactForm" data-sb-form-api-token="API_TOKEN" action="/add-new-user" method="post">
+                    <form class="row g-1 needs-validation" novalidate
+                            id="contactForm" 
+                            data-sb-form-api-token="API_TOKEN" 
+                            action="/add-new-user" 
+                            method="post">
                         <div class="form-floating">
-                            <input class="form-control" id="firstname" name="firstname" type="text" placeholder="Enter your Firstname" data-sb-validations="required" />
-                            <label for="firstname">FirstName</label>
-                            <div class="invalid-feedback" data-sb-feedback="firstname:required">A firstname is required.</div>
+                            <input class="form-control" 
+                                    id="firstname" 
+                                    name="firstname" 
+                                    type="text" 
+                                    placeholder="Enter your Firstname" 
+                                    data-sb-validations="required" />
+                            <label for="firstname">First Name</label>
+                            <div class="invalid-feedback" 
+                                    data-sb-feedback="firstname:required">A firstname is required.</div>
                         </div>
                         <div class="form-floating">
-                            <input class="form-control" id="lastname" name="lastname" type="text" placeholder="Enter your lastname" data-sb-validations="required" />
-                            <label for="lastname">LastName</label>
-                            <div class="invalid-feedback" data-sb-feedback="lastname:required">A lastname is required.</div>
+                            <input class="form-control" 
+                                    id="lastname" 
+                                    name="lastname" 
+                                    type="text" 
+                                    placeholder="Enter your lastname" 
+                                    data-sb-validations="required" />
+                            <label for="lastname">Last Name</label>
+                            <div class="invalid-feedback" 
+                                    data-sb-feedback="lastname:required">A lastname is required.</div>
                         </div>
                         <div class="form-floating">
-                            <input class="form-control" id="license"  name="license" type="number" placeholder="Enter your license number" data-sb-validations="required" />
+                            <input class="form-control" 
+                                    id="license"  
+                                    name="licenseNo" 
+                                    type="number" 
+                                    placeholder="Enter your license number" 
+                                    data-sb-validations="required" />
                             <label for="license">License Number</label>
-                            <div class="invalid-feedback" data-sb-feedback="license:required">A license is required.</div>
+                            <div class="invalid-feedback" 
+                                    data-sb-feedback="license:required">A license is required.</div>
                         </div>
                         <div class="form-floating">
-                            <input class="form-control" id="age"  name="age" type="number" placeholder="Enter your age" data-sb-validations="required,age" />
-                            <label for="age">Age</label>
-                            <div class="invalid-feedback" data-sb-feedback="age:required">An age is required.</div>
-            
-                        </div>
-                        <div class="form-floating">
-                            <input class="form-control" id="birth"  name="birth" type="date" placeholder="Enter your date of birth" data-sb-validations="required,birth" />
+                            <input class="form-control" 
+                                    id="birth"  
+                                    name="DOB" 
+                                    type="date" 
+                                    placeholder="Enter your date of birth" 
+                                    data-sb-validations="required,birth" />
                             <label for="birth">Date of Birth</label>
-                            <div class="invalid-feedback" data-sb-feedback="birth:required">A Date of birth is required.</div>
+                            <div class="invalid-feedback" 
+                                    data-sb-feedback="birth:required">A Date of birth is required.</div>
+                        </div>
+                        <div class="form-floating">
+                            <input class="form-control" 
+                                    id="age"  
+                                    name="age" 
+                                    type="number" 
+                                    placeholder="Enter your age" 
+                                    data-sb-validations="required" />
+                            <label for="age">Age</label>
+                            <div class="invalid-feedback" 
+                                    data-sb-feedback="age:required">An age is required.</div>
+                        </div>
+                        <div class="form-floating">
+                            <input class="form-control" 
+                                    id="make" 
+                                    name="car_make"  
+                                    type="text" 
+                                    placeholder="Enter your car make/brand" 
+                                    data-sb-validations="required" />
+                            <label for="make">Car Make/Brand</label>
+                            <div class="invalid-feedback" 
+                                data-sb-feedback="make:required">A Make/Brand is required.</div>
                         </div>
 
                         <div class="form-floating">
-                            <input class="form-control" id="cardetails" name="cardetails" type="text" placeholder="Enter your car details" data-sb-validations="required,cardetails" />
-                            <label for="cardetails">Car Details</label>
-                            <div class="invalid-feedback" data-sb-feedback="cardetails:required">Car details are required.</div>
+                            <input class="form-control" 
+                                    id="model" 
+                                    name="car_model" 
+                                    type="text" 
+                                    placeholder="Enter your car model" 
+                                    data-sb-validations="required" />
+                            <label for="model">Car Model</label>
+                            <div class="invalid-feedback" 
+                                    data-sb-feedback="model:required">Car model is required.</div>
                         </div>
 
                         <div class="form-floating">
-                            <input class="form-control" id="model"  name="model" type="date" placeholder="Enter your car model" data-sb-validations="required,model" />
-                            <label for="model">Car model</label>
-                            <div class="invalid-feedback" data-sb-feedback="model:required">A Model is required.</div>
+                            <input class="form-control" 
+                                    id="year"  
+                                    name="car_year" 
+                                    type="text" 
+                                    placeholder="Enter your car year" 
+                                    data-sb-validations="required" />
+                            <label for="year">Car Year</label>
+                            <div class="invalid-feedback" 
+                                    data-sb-feedback="year:required">Car year is required.</div>
                         </div>
 
                         <div class="form-floating">
-                            <input class="form-control" id="platenumber" name="platenumber" type="number" placeholder="Enter your license plate number" data-sb-validations="required,platenumber" />
-                            <label for="birth">License plate number</label>
-                            <div class="invalid-feedback" data-sb-feedback="platenumber:required">A License plate number is required.</div>
-                        </div>
-                        <div class="form-floating">
-                            <input class="form-control" id="make" name="make"  type="number" placeholder="Enter your license plate number" data-sb-validations="required,platenumber" />
-                            <label for="birth">Make</label>
-                            <div class="invalid-feedback" data-sb-feedback="platenumber:required">A Make Brand is required.</div>
-                        </div>
+                            <input class="form-control" 
+                                    id="platenumber" 
+                                    name="car_plateno" 
+                                    type="text" 
+                                    placeholder="Enter your license plate number" 
+                                    data-sb-validations="required,platenumber" />
+                            <label for="plantenumber">License plate number</label>
+                            <div class="invalid-feedback" 
+                                    data-sb-feedback="platenumber:required">A License plate number is required.</div>
+                        </div> 
+                        
 
                         <!-- Submit Button-->
                         <!-- <button class="btn btn-primary text-uppercase disabled" id="submitButton" type="submit">Submit</button> -->
-                        <button class="btn btn-primary text-uppercase " id="submitButton" type="submit">Submit</button>
+                        <button class="btn btn-primary text-uppercase" 
+                                id="submitButton" 
+                                type="submit">Submit</button>
                     </form>
                 </div>
             </div>
