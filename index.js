@@ -155,7 +155,7 @@ app.post('/add-new-user', async (req, res) => {
         // some error occurred during creation or save of record
         console.error('Error adding user:', error);
         //res.status(500).send(`Error adding user: ${error}`);
-        res.render('G2_Test', {error: err})     //send control back to form page with error object
+        res.render('G2_Test', {error: error})     //send control back to form page with error object
     }
 
     //console.log("New User"+newUSer)
@@ -246,7 +246,45 @@ app.get('/findUser',async (req,res)=>{
     }
   
 );
+
+// app.get('/updateCarDetails',async (req,res) =>{
+//     console.log(req.query.ID)
+//     const result= await User.findOne({  _id: req.query.ID });
+//     // console.log(result);
+//     console.log();
+//     // res.render('updateCarDetails',{firstname : "Gurpal"});
+//     res.render('updateCarDetails',result);
+
+
+// });
    
+// app.put('/updateCarDetails',(req,res) =>{
+
+//     console.log(req.body);
+
+
+// })
+//8. update car details on GET
+app.get('/updateCarDetails', async (req, res) => {
+    const result= await User.findOne({  _id: req.query.ID });
+    res.render('updateCarDetails', result)
+})
+//9. Update car details on POST (update database record)
+app.post('/updateCarDetails', async (req, res) => {
+    console.log(`Request body Id: ${req.body._id}`)
+    var update_status=" "
+    //have to send {new: true} to get back new record after update
+    const result= await User.findByIdAndUpdate(req.body._id, req.body , {new: true})
+    if(typeof(result) == undefined){
+        update_status="failed"
+    }else{
+            update_status="success"
+    }
+    result["update_status"]=update_status;
+   
+    console.log(`Result ${result}`)
+    res.render('updateCarDetails', result)
+})
 
 
 
