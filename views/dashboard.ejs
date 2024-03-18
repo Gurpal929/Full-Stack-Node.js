@@ -1,31 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
-    <!--Head file--> 
-    <%- include('layouts/head');  %>
-    <body>
-        <!-- Navigation-->
-        <%- include('layouts/nav');%>
-        <!-- Page Header-->
-        <header class="masthead" style="background-image: url('assets/img/license.png')">
-            <div class="container position-relative px-4 px-lg-5">
-                <div class="row gx-4 gx-lg-5 justify-content-center">
-                    <div class="col-md-10 col-lg-8 col-xl-7">
-                        <div class="site-heading">
-                            <h1>Canada Driving License</h1>
-                            <span class="subheading">Apply and get your Driving License</span>
-                            <% if(typeof user != undefined) {%>
-                            <h1>Welcome <%= locals.user.username %> </h1>
-                            <% } %>
-                        </div>
-                    </div>
-                </div>
+  <!--Head file-->
+  <%- include('layouts/head'); %>
+  <body>
+    <!-- Navigation-->
+    <% if(typeof user != 'undefined' ){ %> <%- include('layouts/nav',
+    {user:user});%> <% } else{ %> <%- include('layouts/nav');%> <% } %>
+    <!-- Page Header-->
+    <header
+      class="masthead"
+      style="background-image: url('assets/img/license.png')"
+    >
+      <div class="container position-relative px-4 px-lg-5">
+        <div class="row gx-4 gx-lg-5 justify-content-center">
+          <div class="col-md-10 col-lg-8 col-xl-7">
+            <div class="site-heading">
+              <h1>Canada Driving License</h1>
+              <span class="subheading">Apply and get your Driving License</span>
+              <% if(typeof user != 'undefined') {%>
+              <h1>Welcome <%= locals.user.username %></h1>
+              <% } else {%>
+              <h1>Welcome</h1>
+              <% } %>
             </div>
-            
-        </header>
+          </div>
+        </div>
+      </div>
+    </header>
 
-        <!-- Footer-->
-        <%- include('layouts/footer'); %>
-       <!-- Bootstrap core JS-->
-       <%- include('layouts/script'); %>
-    </body>
+    <!-- Footer-->
+    <%- include('layouts/footer'); %>
+    <!-- Bootstrap core JS-->
+    <%- include('layouts/script'); %>
+  </body>
 </html>
