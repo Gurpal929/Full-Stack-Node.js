@@ -13,10 +13,14 @@
                         <div class="site-heading">
                             <h1>Canada Driving License</h1>
                             <span class="subheading">Apply and get your Driving License</span>
+                            <% if(typeof user != undefined) {%>
+                            <h1>Welcome <%= locals.user.username %> </h1>
+                            <% } %>
                         </div>
                     </div>
                 </div>
             </div>
+            
         </header>
 
         <!-- Footer-->
