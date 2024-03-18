@@ -1,18 +1,20 @@
+<!-- views/login.ejs -->
+
 <!DOCTYPE html>
 <html lang="en">
-    <!--Head file--> 
+    <!-- Head file--> 
     <%- include('layouts/head');  %>
     <body>
         <!-- Navigation-->
-       <%- include('layouts/nav');%>
+        <%- include('layouts/nav');%>
         <!-- Page Header-->
-        <header class="masthead" style="background-image: url('assets/img/license.png')">
-                        <div class="container position-relative px-4 px-lg-5">
+        <header class="masthead" style="background-image: url('assets/img/drivetest.webp')">
+            <div class="container position-relative px-4 px-lg-5">
                 <div class="row gx-4 gx-lg-5 justify-content-center">
                     <div class="col-md-10 col-lg-8 col-xl-7">
                         <div class="page-heading">
-                            <h1>Contact Us </h1>
-                            <span class="subheading">Ask your concerns</span>
+                            <h1>Contact Me</h1>
+                            <span class="subheading">Have questions? I have answers.</span>
                         </div>
                     </div>
                 </div>
@@ -23,7 +25,7 @@
             <div class="container px-4 px-lg-5">
                 <div class="row gx-4 gx-lg-5 justify-content-center">
                     <div class="col-md-10 col-lg-8 col-xl-7">
-                        <p style="color: rgb(30, 0, 255);">Under Construction</p>
+                        <!-- <p style="color: red;">Under Construction</p> -->
                         <div class="my-5">
                             <!-- * * * * * * * * * * * * * * *-->
                             <!-- * * SB Forms Contact Form * *-->
@@ -32,24 +34,20 @@
                             <!-- To make this form functional, sign up at-->
                             <!-- https://startbootstrap.com/solution/contact-forms-->
                             <!-- to get an API token!-->
-
-
-                            <!-- <form id="contactForm" data-sb-form-api-token="API_TOKEN">
+                            <!-- Login Form -->
+                            <form id="loginForm" action="/login" method="post">
                                 <div class="form-floating">
-                                    <input class="form-control" id="username" type="text" placeholder="Enter your username" data-sb-validations="required" />
-                                    <label for="username">Name</label>
-                                    <div class="invalid-feedback" data-sb-feedback="username:required">A username is required.</div>
+                                    <input class="form-control" id="login_username" name="login_username" type="text" placeholder="Enter your username" required>
+                                    <label for="login_username">Username</label>
                                 </div>
                                 <div class="form-floating">
-                                    <input class="form-control" id="password" type="password" placeholder="Enter your password" data-sb-validations="required,password" />
-                                    <label for="password">Password</label>
-                                    <div class="invalid-feedback" data-sb-feedback="password:required">An password is required.</div>
-                                    <div class="invalid-feedback" data-sb-feedback="password:password">password is not valid.</div>
-                                </div> -->
-                                <!-- Submit Button-->
-
-
-                                <!-- <button class="btn btn-primary text-uppercase disabled" id="submitButton" type="submit">Login</button> -->
+                                    <input class="form-control" id="login_password" name="login_password" type="password" placeholder="Enter your password" required>
+                                    <label for="login_password">Password</label>
+                                </div>
+                                <!-- Submit Button for Login-->
+                                <button class="btn btn-primary text-uppercase" id="loginButton" type="submit">Login</button>
+                                <!-- Sign-up Button -->
+                                <a href="/signup" class="btn btn-secondary text-uppercase">Sign Up</a>
                             </form>
                         </div>
                     </div>
@@ -57,9 +55,8 @@
             </div>
         </main>
         <!-- Footer-->
-       <%- include('layouts/footer'); %>
+        <%- include('layouts/footer'); %>
         <!-- Bootstrap core JS-->
         <%- include('layouts/script'); %>
-       
     </body>
 </html>

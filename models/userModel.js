@@ -1,26 +1,14 @@
 const  mongoose=require('mongoose')
+const bcrypt = require('bcryptjs');
 const Schema = mongoose.Schema
 
-//model
-// const userSchema = new Schema({
-//   firstname: String,
-//   lastname: String,
-//   licenseNo: String,
-//   DOB:String,
-//   age: Number,
-//   car_details: {
-//     make: String,
-//     model: String,
-//     year: String,
-//     plateno: String
-//   }
-// });
 
-//NOTE: removed nesting from schema
-//      Reason: how are we going to get nested data from html form ?
-//        Currently, we can map form data straight to this model using const newUser = new User(req.body)
-//          (as long as field names are the same in form as in this schema)
 const userSchema = new Schema({
+  // username: { type: String, required: true, unique: true },
+  // password: { type: String, required: true },
+    username:String,
+    password:String,
+    userType: { type: String, enum: ['Driver', 'Examiner', 'Admin'], required: true, default: 'Driver' },
     firstname: String,
     lastname: String,
     licenseNo: String,
@@ -30,7 +18,23 @@ const userSchema = new Schema({
     car_model: String,
     car_year: String,
     car_plateno: String
+    // userType: { type: String, enum: ['Driver', 'Examiner', 'Admin'], required: true, default: 'Driver' },
+    // firstname: { type: String, default: 'John' },
+    // lastname: { type: String, default: 'Doe' },
+    // licenseNo: { type: String, default: 'A12345' },
+    // car_make: { type: String, default: 'Toyota' },
+    // car_model: { type: String, default: 'Corolla' },
+    // car_year: { type: String, default: '2022' },
+    // car_plateno: { type: String, default: 'XYZ123' }
   });
+  // Hash password before saving
+userSchema.pre('save', async function(next) {
+    const user = this;
+    if (!user.isModified('password')) return next();
+    const hash = await bcrypt.hash(user.password, 10);
+    user.password = hash;
+    next();
+});
 
 const User = mongoose.model('User',userSchema)
 
