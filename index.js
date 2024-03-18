@@ -155,24 +155,60 @@ app.post('/signupUser', async (req, res) => {
 
 //11.Login
 app.post('/loginUser', async (req, res) => {
-    const { login_username, login_password } = req.body;
+    const { login_username, login_password,} = req.body;
+    console.log(login_username,login_password);
+    let userLogin=false;
 
     // Check if the user exists in the database
-    const user = await User.findOne({ username: login_username, password: login_password });
+  
+    // const hash = await bcrypt.hash(login_password, 10);
+    // console.log(hash);
+    const user = await User.findOne({ username: login_username});
+    console.log(user);
+    console.log(user.password);
 
-    if (!user) {
+
+    // Load hash from your password DB.
+    bcrypt.compare(login_password, user.password, function(err, result) {
+    // result == true
+      if(!err){
+        console.log(' Result ' + result);
+      userLogin=result;
+      }else{
+
+        console.log(' Error ' + err);
+      }
+      
+    });
+
+   
+    // console.log(user);
+
+    if (!userLogin) {
         // res.send('unsuccesful')
         
-        res.render('login', {username:login_username});
+        res.render('login', req.body);
     } else {
         // User is logging in again
       
-        // res.render('dashboard', { user });
-        res.send('Login Successfull');
+       
+        //res.send('Login Successfull');
+        // If login is successful, render the login success page and display the G2_Test link again
+        // res.render('dashboard', { username: login_username, displayG2Test: true });
+            // If UserType is Driver, show navigation options for G2_page and G_page
+      if (user.userType === 'Driver') {
+        res.render('dashboard', { user });
+    } else {
+        res.send('userType is not Driver')
     }
-   
+    }
+
+  
+    
 });
 
 app.listen(4000,()=>{
     console.log(`Application link : http://localhost:4000/`)
 })
+
+

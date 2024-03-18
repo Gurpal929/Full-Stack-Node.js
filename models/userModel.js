@@ -1,5 +1,5 @@
 const  mongoose=require('mongoose')
-const bcrypt = require('bcryptjs');
+const bcrypt = require('bcrypt');
 const Schema = mongoose.Schema
 
 
@@ -27,6 +27,7 @@ const userSchema = new Schema({
     // car_year: { type: String, default: '2022' },
     // car_plateno: { type: String, default: 'XYZ123' }
   });
+
   // Hash password before saving
 userSchema.pre('save', async function(next) {
     const user = this;
