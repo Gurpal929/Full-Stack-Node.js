@@ -8,11 +8,13 @@
         <!-- Navigation-->
         <%- include('layouts/nav');%>
         <!-- Page Header-->
-        <header class="masthead" style="background-image: url('assets/img/drivetest.webp')">
+      <!-- Page Header-->
+      <header class="masthead" style="background-image: url('assets/img/license.png')">
             <div class="container position-relative px-4 px-lg-5">
                 <div class="row gx-4 gx-lg-5 justify-content-center">
                     <div class="col-md-10 col-lg-8 col-xl-7">
                         <div class="page-heading">
+
                             <h1>Contact Me</h1>
                             <span class="subheading">Have questions? I have answers.</span>
                         </div>
@@ -35,10 +37,10 @@
                             <!-- https://startbootstrap.com/solution/contact-forms-->
                             <!-- to get an API token!-->
                             <!-- Login Form -->
-                            <form id="loginForm" action="/login" method="post">
+                            <form id="loginForm" action="/loginUser" method="post">
                                 <div class="form-floating">
-                                    <input class="form-control" id="login_username" name="login_username" type="text" placeholder="Enter your username" required>
-                                    <label for="login_username">Username</label>
+                                    <input class="form-control" id="login_username" name="login_username" type="text" placeholder="Enter your username" value="<%= locals.username %>"  required >
+                                    <label for="login_username" >Username</label>
                                 </div>
                                 <div class="form-floating">
                                     <input class="form-control" id="login_password" name="login_password" type="password" placeholder="Enter your password" required>

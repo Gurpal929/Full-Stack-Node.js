@@ -79,8 +79,7 @@ app.get('/signup',(req,res)=>{
 
 //6. Add new user on POST (Route to handle form submission and save user data)
 
-
-app.post('/add-new-user', async (req, res) => {
+    app.post('/add-new-user', async (req, res) => {
     try {
         
         const newUser = new User(req.body);
@@ -154,9 +153,25 @@ app.post('/signupUser', async (req, res) => {
     }
 });
 
+//11.Login
+app.post('/loginUser', async (req, res) => {
+    const { login_username, login_password } = req.body;
 
+    // Check if the user exists in the database
+    const user = await User.findOne({ username: login_username, password: login_password });
 
-
+    if (!user) {
+        // res.send('unsuccesful')
+        
+        res.render('login', {username:login_username});
+    } else {
+        // User is logging in again
+      
+        // res.render('dashboard', { user });
+        res.send('Login Successfull');
+    }
+   
+});
 
 app.listen(4000,()=>{
     console.log(`Application link : http://localhost:4000/`)
