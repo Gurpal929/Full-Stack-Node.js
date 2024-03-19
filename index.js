@@ -4,6 +4,7 @@ const express = require("express");
 const ejs = require("ejs");
 const bcrypt = require("bcryptjs");
 const path = require("path");
+const session = require("express-session");
 
 const mongoose = require("mongoose");
 
@@ -21,7 +22,7 @@ try {
   console.log("Mongo DB Conncected");
 } catch (err) {
   console.log("MongoDB Connecting Error!!");
-  //TODO: If db is not connected, should the program go further or end here ?
+ 
 }
 
 // ############ CREATE APPLICATION ##########################
@@ -32,6 +33,13 @@ const app = express();
 app.use(express.static("public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(
+  session({
+    secret: "Gurpal",
+    resave: true,
+    saveUninitialized: true,
+  })
+);
 
 // ############ VIEW ENGINE ##########################
 
@@ -50,13 +58,23 @@ app.get("/login", (req, res) => {
 });
 
 //3. G2 route on GET
-app.get("/G2", (req, res) => {
-  res.render("G2_Test");
+app.get("/G2", async (req, res) => {
+  const userId = req.session.userId;
+  const user = await User.findOne({ _id: userId });
+  console.log("User" + user);
+  console.log("License Number " + user.licenseNo);
+  if (typeof user.licenseNo == "undefined") {
+    res.render("G2_Test", user);
+  } else {
+    res.render("G2_Test", user);
+  }
 });
 
 //4. G route on GET
-app.get("/G", (req, res) => {
-  res.render("G_Test");
+app.get("/G", async (req, res) => {
+    const userId = req.session.userId;
+    const user = await User.findOne({ _id: userId });
+  res.render("G_Test",{ result: [user] });
 });
 
 //5. Add new user on GET
@@ -72,16 +90,10 @@ app.get("/signup", (req, res) => {
 //6. Add new user on POST (Route to handle form submission and save user data)
 
 app.post("/add-new-user", async (req, res) => {
-  try {
-    const newUser = new User(req.body);
-    await newUser
-      .save()
-      .then((user) => res.render("G2_Test", { user: user }))
-      .catch((err) => res.render("G2_Test", { error: err }));
-  } catch (error) {
-    console.error("Error adding user:", error);
-    res.render("G2_Test", { error: error });
-  }
+  const userId = req.session.userId;
+  let user_old = await User.findOneAndUpdate({ _id: userId }, req.body);
+  let user_new = await User.findOne({ _id: userId });
+  res.render("G2_Test", user_new);
 });
 
 //7. Find user on GET (retrieve data from the database)
@@ -90,7 +102,6 @@ app.get("/findUser", async (req, res) => {
   const result = await User.find({ licenseNo: req.query.licenseNo });
   console.log(`Results found: ${result.length}`);
   console.log(`Results: ${result}`);
-
   res.render("G_Test", { result: result });
 });
 
@@ -129,7 +140,6 @@ app.post("/signupUser", async (req, res) => {
     const newUser = new User({ username, password, userType });
     await newUser
       .save()
-      // res.status(201).json({ message: 'User created successfully' });
       .then((user) => res.render("login", { user: user }))
       .catch((err) => res.render("login", { error: err }));
   } catch (error) {
@@ -145,30 +155,38 @@ app.post("/loginUser", async (req, res) => {
 
   // Check if the user exists in the database
   const user = await User.findOne({ username: login_username });
-
-  // Load hash from your password DB.
-  bcrypt.compare(login_password, user.password, function (err, result) {
-    // result == true
-    if (!err) {
-      console.log(" Result " + result);
-      userLogin = result;
-    } else {
-      console.log(" Error " + err);
-    }
-
-    if (!userLogin) {
-      res.render("login", req.body);
-    } else {
-      // User is logging in again
-      if (user.userType === "Driver") {
-        res.render("dashboard", { user: user });
+  if (!user) {
+    res.locals.error='Unsuccessful';
+    res.render("login", req.body);
+  } else {
+    // Load hash from your password DB.
+    bcrypt.compare(login_password, user.password, function (err, result) {
+      // result == true
+      if (!err) {
+        console.log(" Result " + result);
+        userLogin = result;
       } else {
-        res.send("userType is not Driver");
+        console.log(" Error " + err);
       }
-    }
-  });
+
+      if (!userLogin) {
+        res.render("login", req.body, {error:'Unsuccessful'});
+      } else {
+        // User is logging in again
+        req.session.userId = user._id;
+        req.session.userType=user.userType ;
+        if (user.userType === "Driver") {
+          res.render("dashboard", { user: user });
+        } else {
+          res.send("userType is not Driver");
+        }
+      }
+    });
+  }
 });
 
 app.listen(4000, () => {
   console.log(`Application link : http://localhost:4000/`);
 });
+
+

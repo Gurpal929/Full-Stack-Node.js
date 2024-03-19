@@ -34,13 +34,6 @@
                 <br/>
                 <p>Enter your details here</p>
                 <div class="my-5">
-                    <!-- * * * * * * * * * * * * * * *-->
-                    <!-- * * SB Forms Contact Form * *-->
-                    <!-- * * * * * * * * * * * * * * *-->
-                    <!-- This form is pre-integrated with SB Forms.-->
-                    <!-- To make this form functional, sign up at-->
-                    <!-- https://startbootstrap.com/solution/contact-forms-->
-                    <!-- to get an API token!-->
                     <form class="row g-1 needs-validation" novalidate
                             id="contactForm" 
                             data-sb-form-api-token="API_TOKEN" 
@@ -51,6 +44,7 @@
                                     id="firstname" 
                                     name="firstname" 
                                     type="text" 
+                                    value="<%= locals.firstname %>"
                                     placeholder="Enter your Firstname" 
                                     data-sb-validations="required" />
                             <label for="firstname">First Name</label>
@@ -62,6 +56,7 @@
                                     id="lastname" 
                                     name="lastname" 
                                     type="text" 
+                                    value="<%= locals.lastname %>"
                                     placeholder="Enter your lastname" 
                                     data-sb-validations="required" />
                             <label for="lastname">Last Name</label>
@@ -73,6 +68,7 @@
                                     id="license"  
                                     name="licenseNo" 
                                     type="number" 
+                                    value="<%= locals.licenseNo %>"
                                     placeholder="Enter your license number" 
                                     data-sb-validations="required" />
                             <label for="license">License Number</label>
@@ -84,6 +80,7 @@
                                     id="birth"  
                                     name="DOB" 
                                     type="date" 
+                                    value="<%= locals.DOB %>"
                                     placeholder="Enter your date of birth" 
                                     data-sb-validations="required,birth" />
                             <label for="birth">Date of Birth</label>
@@ -95,6 +92,7 @@
                                     id="age"  
                                     name="age" 
                                     type="number" 
+                                    value="<%= locals.age %>"
                                     placeholder="Enter your age" 
                                     data-sb-validations="required" />
                             <label for="age">Age</label>
@@ -106,6 +104,7 @@
                                     id="make" 
                                     name="car_make"  
                                     type="text" 
+                                    value="<%= locals.car_make %>"
                                     placeholder="Enter your car make/brand" 
                                     data-sb-validations="required" />
                             <label for="make">Car Make/Brand</label>
@@ -118,6 +117,7 @@
                                     id="model" 
                                     name="car_model" 
                                     type="text" 
+                                    value="<%= locals.car_model %>"
                                     placeholder="Enter your car model" 
                                     data-sb-validations="required" />
                             <label for="model">Car Model</label>
@@ -130,6 +130,7 @@
                                     id="year"  
                                     name="car_year" 
                                     type="text" 
+                                    value="<%= locals.car_year %>"
                                     placeholder="Enter your car year" 
                                     data-sb-validations="required" />
                             <label for="year">Car Year</label>
@@ -142,6 +143,7 @@
                                     id="platenumber" 
                                     name="car_plateno" 
                                     type="text" 
+                                    value="<%= locals.car_plateno %>"
                                     placeholder="Enter your license plate number" 
                                     data-sb-validations="required,platenumber" />
                             <label for="plantenumber">License plate number</label>

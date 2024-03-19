@@ -2,63 +2,96 @@
 
 <!DOCTYPE html>
 <html lang="en">
-    <!-- Head file--> 
-    <%- include('layouts/head');  %>
-    <body>
-        <!-- Navigation-->
-        <%- include('layouts/nav');%>
-        <!-- Page Header-->
-      <!-- Page Header-->
-      <header class="masthead" style="background-image: url('assets/img/license.png')">
-            <div class="container position-relative px-4 px-lg-5">
-                <div class="row gx-4 gx-lg-5 justify-content-center">
-                    <div class="col-md-10 col-lg-8 col-xl-7">
-                        <div class="page-heading">
+  <!-- Head file-->
+  <%- include('layouts/head'); %>
+  <body>
+    <!-- Navigation-->
+    <%- include('layouts/nav');%>
+    <!-- Page Header-->
+    <!-- Page Header-->
+    <header
+      class="masthead"
+      style="background-image: url('assets/img/license.png')"
+    >
+      <div class="container position-relative px-4 px-lg-5">
+        <div class="row gx-4 gx-lg-5 justify-content-center">
+          <div class="col-md-10 col-lg-8 col-xl-7">
+            <div class="page-heading">
+              <h1>Login</h1>
+              <span class="subheading">Login here.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+    <!-- Main Content-->
+    <main class="mb-4">
+      <div class="container px-4 px-lg-5">
+        <div class="row gx-4 gx-lg-5 justify-content-center">
+          <div class="col-md-10 col-lg-8 col-xl-7">
+            <!-- <p style="color: red;">Under Construction</p> -->
 
-                            <h1>Login</h1>
-                            <span class="subheading">Login here.</span>
-                        </div>
-                    </div>
-                </div>
+            <% if (typeof(error) != 'undefined' && error == "Unsuccessful") { %>
+
+            <div class="alert alert-danger" role="alert">
+              Login failed.Please Sign Up!!!
             </div>
-        </header>
-        <!-- Main Content-->
-        <main class="mb-4">
-            <div class="container px-4 px-lg-5">
-                <div class="row gx-4 gx-lg-5 justify-content-center">
-                    <div class="col-md-10 col-lg-8 col-xl-7">
-                        <!-- <p style="color: red;">Under Construction</p> -->
-                        <div class="my-5">
-                            <!-- * * * * * * * * * * * * * * *-->
-                            <!-- * * SB Forms Contact Form * *-->
-                            <!-- * * * * * * * * * * * * * * *-->
-                            <!-- This form is pre-integrated with SB Forms.-->
-                            <!-- To make this form functional, sign up at-->
-                            <!-- https://startbootstrap.com/solution/contact-forms-->
-                            <!-- to get an API token!-->
-                            <!-- Login Form -->
-                            <form id="loginForm" action="/loginUser" method="post">
-                                <div class="form-floating">
-                                    <input class="form-control" id="login_username" name="login_username" type="text" placeholder="Enter your username" value="<%= locals.login_username %>"  value="<%= locals.login_password%>" required >
-                                    <label for="login_username" >Username</label>
-                                </div>
-                                <div class="form-floating">
-                                    <input class="form-control" id="login_password" name="login_password" type="password" placeholder="Enter your password" required>
-                                    <label for="login_password">Password</label>
-                                </div>
-                                <!-- Submit Button for Login-->
-                                <button class="btn btn-primary text-uppercase" id="loginButton" type="submit">Login</button>
-                                <!-- Sign-up Button -->
-                                <a href="/signup" class="btn btn-secondary text-uppercase">Sign Up</a>
-                            </form>
-                        </div>
-                    </div>
+            <% } %>
+            <div class="my-5">
+              <!-- * * * * * * * * * * * * * * *-->
+              <!-- * * SB Forms Contact Form * *-->
+              <!-- * * * * * * * * * * * * * * *-->
+              <!-- This form is pre-integrated with SB Forms.-->
+              <!-- To make this form functional, sign up at-->
+              <!-- https://startbootstrap.com/solution/contact-forms-->
+              <!-- to get an API token!-->
+              <!-- Login Form -->
+              <form id="loginForm" action="/loginUser" method="post">
+                <div class="form-floating">
+                  <input
+                    class="form-control"
+                    id="login_username"
+                    name="login_username"
+                    type="text"
+                    placeholder="Enter your username"
+                    value="<%= locals.login_username %>"
+                    value="<%= locals.login_password%>"
+                    required
+                  />
+                  <label for="login_username">Username</label>
                 </div>
+                <div class="form-floating">
+                  <input
+                    class="form-control"
+                    id="login_password"
+                    name="login_password"
+                    type="password"
+                    placeholder="Enter your password"
+                    required
+                  />
+                  <label for="login_password">Password</label>
+                </div>
+                <!-- Submit Button for Login-->
+                <button
+                  class="btn btn-primary text-uppercase"
+                  id="loginButton"
+                  type="submit"
+                >
+                  Login
+                </button>
+                <!-- Sign-up Button -->
+                <a href="/signup" class="btn btn-secondary text-uppercase"
+                  >Sign Up</a
+                >
+              </form>
             </div>
-        </main>
-        <!-- Footer-->
-        <%- include('layouts/footer'); %>
-        <!-- Bootstrap core JS-->
-        <%- include('layouts/script'); %>
-    </body>
+          </div>
+        </div>
+      </div>
+    </main>
+    <!-- Footer-->
+    <%- include('layouts/footer'); %>
+    <!-- Bootstrap core JS-->
+    <%- include('layouts/script'); %>
+  </body>
 </html>

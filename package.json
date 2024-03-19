@@ -4,7 +4,7 @@
   "description": "Book your driving test",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js",
+    "start": "nodemon -e js,ejs,json,mjs,cjs index.js ",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -18,6 +18,7 @@
     "bcryptjs": "^2.4.3",
     "ejs": "^3.1.9",
     "express": "^4.18.3",
+    "express-session": "^1.18.0",
     "mongoose": "^8.2.2",
     "nodemon": "^3.1.0"
   }
