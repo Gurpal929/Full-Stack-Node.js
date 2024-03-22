@@ -175,11 +175,28 @@ app.post("/loginUser", async (req, res) => {
         // User is logging in again
         req.session.userId = user._id;
         req.session.userType=user.userType ;
+        // if (user.userType === "Driver") {
+        //   res.render("dashboard", { user: user });
+        // } else {
+        //   res.send("userType is not Driver");
+        // }
         if (user.userType === "Driver") {
           res.render("dashboard", { user: user });
-        } else {
-          res.send("userType is not Driver");
+        } else if(user.userType === "Admin"){
+          res.render("appointment", { user: user });
+        } else if (user.userType === "Examiner"){
+          res.render("", { user: user });
+        }else {
+           res.send("Accoutn does not exist");
         }
+
+
+        //show appointment page if user loggd in as Admin
+        // if (user.userType === "Admin") {
+        //   res.render("appointment", { user: user });
+        // } else {
+        //   res.send("This Admin account does not exist");
+        // }
       }
     });
   }
