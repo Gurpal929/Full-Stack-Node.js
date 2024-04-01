@@ -6,9 +6,11 @@ const bcrypt = require("bcryptjs");
 const path = require("path");
 const session = require("express-session");
 
+
 const mongoose = require("mongoose");
 
 const User = require("./models/userModel");
+const Appointment = require('./models/appointmentModel');
 
 // ------ Connect to database
 
@@ -87,6 +89,8 @@ app.get("/signup", (req, res) => {
   res.render("signup");
 });
 
+
+
 //6. Add new user on POST (Route to handle form submission and save user data)
 
 app.post("/add-new-user", async (req, res) => {
@@ -110,6 +114,20 @@ app.get("/updateCarDetails", async (req, res) => {
   const result = await User.findOne({ _id: req.query.ID });
   res.render("updateCarDetails", result);
 });
+
+
+//  Appointment route
+app.get("/appointment", async (req, res) => {
+  const selectedDate = req.query.date || new Date().toISOString().split('T')[0]; // Default to today's date
+  const appointments = await Appointment.find({ date: selectedDate });
+  const bookedSlots = appointments.map(appointment => appointment.time);
+  res.render('appointment', { user: req.session.user, bookedSlots, selectedDate });
+});
+
+
+
+
+
 //9. Update car details on POST (update database record)
 app.post("/updateCarDetails", async (req, res) => {
   console.log(`Request body Id: ${req.body._id}`);
@@ -175,32 +193,45 @@ app.post("/loginUser", async (req, res) => {
         // User is logging in again
         req.session.userId = user._id;
         req.session.userType=user.userType ;
-        // if (user.userType === "Driver") {
-        //   res.render("dashboard", { user: user });
-        // } else {
-        //   res.send("userType is not Driver");
-        // }
+      
         if (user.userType === "Driver") {
           res.render("dashboard", { user: user });
         } else if(user.userType === "Admin"){
+          console.log(user.userType);
           res.render("appointment", { user: user });
         } else if (user.userType === "Examiner"){
           res.render("", { user: user });
         }else {
            res.send("Accoutn does not exist");
         }
-
-
-        //show appointment page if user loggd in as Admin
-        // if (user.userType === "Admin") {
-        //   res.render("appointment", { user: user });
-        // } else {
-        //   res.send("This Admin account does not exist");
-        // }
       }
     });
   }
 });
+
+//12.add-appontment 
+
+app.post('/add-appointment', async (req, res) => {
+  const { date, time } = req.body;
+
+  const existingAppointment = await Appointment.findOne({ date, time });
+  if (existingAppointment) {
+    return res.status(400).send('This time slot is already booked.');
+  }
+
+ 
+  const newAppointment = new Appointment({ date, time, isTimeSlotAvailable: true });
+  await newAppointment.save();
+
+
+  const appointments = await Appointment.find({ date });
+  const bookedSlots = appointments.map(appointment => appointment.time);
+
+  
+  res.render('appointment', { user: req.session.user, bookedSlots, selectedDate: date });
+});
+
+
 
 app.listen(4000, () => {
   console.log(`Application link : http://localhost:4000/`);
