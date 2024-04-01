@@ -66,11 +66,26 @@ app.get("/G2", async (req, res) => {
   console.log("User" + user);
   console.log("License Number " + user.licenseNo);
   if (typeof user.licenseNo == "undefined") {
-    res.render("G2_Test", user);
+   // res.render("G2_Test", {user});
+    res.send('UserId Not Found' + userId);
   } else {
-    res.render("G2_Test", user);
+    const selectedDate = req.query.date || new Date().toISOString().split('T')[0];
+    const appointments = await Appointment.find({ date: new Date(selectedDate)});
+    res.render("G2_Test", {user:user,appointments:appointments});
   }
 });
+
+// G2 route on Post
+app.post("/G2", async (req, res) => {
+  const selectedDate = req.body.date || new Date().toISOString().split('T')[0];
+  const appointments = await Appointment.find({ date: new Date(selectedDate)});
+
+  res.render("G2_Test", { appointments });
+  const { date } = req.body;
+  console.log('Date' + date);
+  const availableAppointments = await Appointment.find({ date: new Date(date)});
+});
+
 
 //4. G route on GET
 app.get("/G", async (req, res) => {
@@ -118,11 +133,14 @@ app.get("/updateCarDetails", async (req, res) => {
 
 //  Appointment route
 app.get("/appointment", async (req, res) => {
-  const selectedDate = req.query.date || new Date().toISOString().split('T')[0]; // Default to today's date
+  const selectedDate = req.query.date || new Date().toISOString().split('T')[0]; 
   const appointments = await Appointment.find({ date: selectedDate });
-  const bookedSlots = appointments.map(appointment => appointment.time);
+  const bookedSlots = appointments.map(appointment => appointment.time) || [];
+
+  console.log("Available slots:" + bookedSlots);
   res.render('appointment', { user: req.session.user, bookedSlots, selectedDate });
 });
+
 
 
 
@@ -167,6 +185,53 @@ app.post("/signupUser", async (req, res) => {
 });
 
 //11.Login
+// app.post("/loginUser", async (req, res) => {
+//   const { login_username, login_password } = req.body;
+//   let userLogin = false;
+
+//   // Check if the user exists in the database
+//   const user = await User.findOne({ username: login_username });
+//   if (!user) {
+//     res.locals.error='Unsuccessful';
+//     res.render("login", req.body);
+//   } else {
+//     // Load hash from your password DB.
+//     bcrypt.compare(login_password, user.password, function (err, result) {
+//       // result == true
+//       if (!err) {
+//         console.log(" Result " + result);
+//         userLogin = result;
+//       } else {
+//         console.log(" Error " + err);
+//       }
+
+//       if (!userLogin) {
+//         res.render("login", req.body, {error:'Unsuccessful'});
+//       } else {
+//         // User is logging in again
+//         req.session.userId = user._id;
+//         req.session.userType=user.userType ;
+
+//         const selectedDate = req.query.date || new Date().toISOString().split('T')[0]; 
+//         const appointments = await Appointment.find({ date: selectedDate });
+//         const bookedSlots = appointments.map(appointment => appointment.time) || [];
+
+//   console.log("Available slots:" + bookedSlots);
+      
+//         if (user.userType === "Driver") {
+//           res.render("dashboard", { user: user });
+//         } else if(user.userType === "Admin"){
+//           console.log(user.userType);
+//           res.render("appointment", { user: user },  bookedSlots, selectedDate);
+//         } else if (user.userType === "Examiner"){
+//           res.render("", { user: user });
+//         }else {
+//            res.send("Accoutn does not exist");
+//         }
+//       }
+//     });
+//   }
+// });
 app.post("/loginUser", async (req, res) => {
   const { login_username, login_password } = req.body;
   let userLogin = false;
@@ -174,11 +239,11 @@ app.post("/loginUser", async (req, res) => {
   // Check if the user exists in the database
   const user = await User.findOne({ username: login_username });
   if (!user) {
-    res.locals.error='Unsuccessful';
+    res.locals.error = 'Unsuccessful';
     res.render("login", req.body);
   } else {
     // Load hash from your password DB.
-    bcrypt.compare(login_password, user.password, function (err, result) {
+    bcrypt.compare(login_password, user.password, async function (err, result) {
       // result == true
       if (!err) {
         console.log(" Result " + result);
@@ -188,26 +253,33 @@ app.post("/loginUser", async (req, res) => {
       }
 
       if (!userLogin) {
-        res.render("login", req.body, {error:'Unsuccessful'});
+        res.render("login", { ...req.body, error: 'Unsuccessful' });
       } else {
         // User is logging in again
         req.session.userId = user._id;
-        req.session.userType=user.userType ;
-      
+        req.session.userType = user.userType;
+
+        const selectedDate = req.query.date || new Date().toISOString().split('T')[0];
+        const appointments = await Appointment.find({ date: selectedDate });
+        const bookedSlots = appointments.map(appointment => appointment.time) || [];
+
+        console.log("Available slots:" + bookedSlots);
+
         if (user.userType === "Driver") {
           res.render("dashboard", { user: user });
-        } else if(user.userType === "Admin"){
+        } else if (user.userType === "Admin") {
           console.log(user.userType);
-          res.render("appointment", { user: user });
-        } else if (user.userType === "Examiner"){
+          res.render("appointment", { user: user, bookedSlots, selectedDate });
+        } else if (user.userType === "Examiner") {
           res.render("", { user: user });
-        }else {
-           res.send("Accoutn does not exist");
+        } else {
+          res.send("Account does not exist");
         }
       }
     });
   }
 });
+
 
 //12.add-appontment 
 
@@ -220,15 +292,16 @@ app.post('/add-appointment', async (req, res) => {
   }
 
  
-  const newAppointment = new Appointment({ date, time, isTimeSlotAvailable: true });
+  const newAppointment = new Appointment({ date, time, isTimeSlotAvailable: true});
   await newAppointment.save();
-
+ 
 
   const appointments = await Appointment.find({ date });
   const bookedSlots = appointments.map(appointment => appointment.time);
+  
 
   
-  res.render('appointment', { user: req.session.user, bookedSlots, selectedDate: date });
+  res.render('appointment', { user: req.session.user, bookedSlots, newAppointment, selectedDate: date });
 });
 
 
@@ -238,3 +311,53 @@ app.listen(4000, () => {
 });
 
 
+//13. When a user books an appointment,
+// update the Appointment record to mark the time slot as unavailable:
+
+// app.post("/get-appointmentSlots", async (req, res) => {
+//   // const { date} = req.body;
+//   // const availableAppointments = await Appointment.find({ date: date});
+//   // res.render('G2_Test', {appointments: availableAppointments});
+//   //ToDO: find out how to get calling page from get 
+  
+
+
+// });
+
+app.post('/book-appointment', async (req, res) => {
+  // const { date } = req.body;
+  const appointmentId= req.body.appointmentId;
+  const userId = req.session.userId;
+  const appointmentDate= req.body.appointmentDate;
+ console.log("appointment id:= " + appointmentId);
+ console.log("user id : " + userId);
+ console.log(`appointment Date:   ${appointmentDate}`);
+
+
+  const result = await User.updateOne({_id:userId},{appointmentId: appointmentId});
+  const appointmentUpdate = await Appointment.updateOne({_id:appointmentId},{isTimeSlotAvailable: false});
+  const user=User.findById(userId);
+
+  console.log('USer Updated ' + result.modifiedCount);
+  console.log('Appointmnent Updated ' + appointmentUpdate.modifiedCount);
+  // res.render('G2_Test', {appointments: availableAppointments});
+  const appointments = await Appointment.find({ date: new Date(appointmentDate)});
+  res.render("G2_Test", {user:user,appointments:appointments});
+});
+
+
+  // const existingAppointment = await Appointment.findOne({ date, time });
+  // if (!existingAppointment || !existingAppointment.isTimeSlotAvailable) {
+  //   return res.status(400).send('This time slot is not available.');
+  // }
+
+    // Update the appointment to mark it as unavailable
+    // existingAppointment.isTimeSlotAvailable = false;
+    // await existingAppointment.save();
+  
+    // // Update the User collection to store the Appointment ID for the user
+    // const user = await User.findById(req.session.userId);
+    // user.appointmentId = existingAppointment._id;
+    // await user.save();
+  
+    // res.redirect("/dashboard"); 

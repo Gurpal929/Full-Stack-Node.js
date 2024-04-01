@@ -11,6 +11,7 @@ const userSchema = new Schema({
     required: true,
     default: "Driver",
   },
+  appointmentId: String ,
   firstname: String,
   lastname: String,
   licenseNo: String,

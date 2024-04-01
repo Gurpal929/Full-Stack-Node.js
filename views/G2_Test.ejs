@@ -44,7 +44,7 @@
                                     id="firstname" 
                                     name="firstname" 
                                     type="text" 
-                                    value="<%= locals.firstname %>"
+                                    value="<%= locals.user.firstname %>"
                                     placeholder="Enter your Firstname" 
                                     data-sb-validations="required" />
                             <label for="firstname">First Name</label>
@@ -56,7 +56,7 @@
                                     id="lastname" 
                                     name="lastname" 
                                     type="text" 
-                                    value="<%= locals.lastname %>"
+                                    value="<%= locals.user.lastname %>"
                                     placeholder="Enter your lastname" 
                                     data-sb-validations="required" />
                             <label for="lastname">Last Name</label>
@@ -68,7 +68,7 @@
                                     id="license"  
                                     name="licenseNo" 
                                     type="number" 
-                                    value="<%= locals.licenseNo %>"
+                                    value="<%= locals.user.licenseNo %>"
                                     placeholder="Enter your license number" 
                                     data-sb-validations="required" />
                             <label for="license">License Number</label>
@@ -80,7 +80,7 @@
                                     id="birth"  
                                     name="DOB" 
                                     type="date" 
-                                    value="<%= locals.DOB %>"
+                                    value="<%= locals.user.DOB %>"
                                     placeholder="Enter your date of birth" 
                                     data-sb-validations="required,birth" />
                             <label for="birth">Date of Birth</label>
@@ -92,7 +92,7 @@
                                     id="age"  
                                     name="age" 
                                     type="number" 
-                                    value="<%= locals.age %>"
+                                    value="<%= locals.user.age %>"
                                     placeholder="Enter your age" 
                                     data-sb-validations="required" />
                             <label for="age">Age</label>
@@ -104,7 +104,7 @@
                                     id="make" 
                                     name="car_make"  
                                     type="text" 
-                                    value="<%= locals.car_make %>"
+                                    value="<%= locals.user.car_make %>"
                                     placeholder="Enter your car make/brand" 
                                     data-sb-validations="required" />
                             <label for="make">Car Make/Brand</label>
@@ -117,7 +117,7 @@
                                     id="model" 
                                     name="car_model" 
                                     type="text" 
-                                    value="<%= locals.car_model %>"
+                                    value="<%= locals.user.car_model %>"
                                     placeholder="Enter your car model" 
                                     data-sb-validations="required" />
                             <label for="model">Car Model</label>
@@ -130,7 +130,7 @@
                                     id="year"  
                                     name="car_year" 
                                     type="text" 
-                                    value="<%= locals.car_year %>"
+                                    value="<%= locals.user.car_year %>"
                                     placeholder="Enter your car year" 
                                     data-sb-validations="required" />
                             <label for="year">Car Year</label>
@@ -143,7 +143,7 @@
                                     id="platenumber" 
                                     name="car_plateno" 
                                     type="text" 
-                                    value="<%= locals.car_plateno %>"
+                                    value="<%= locals.user.car_plateno %>"
                                     placeholder="Enter your license plate number" 
                                     data-sb-validations="required,platenumber" />
                             <label for="plantenumber">License plate number</label>
@@ -158,6 +158,48 @@
                                 id="submitButton" 
                                 type="submit">Submit</button>
                     </form>
+                    <!-- G2_page.ejs -->
+
+<form action="/G2" method="get">
+    <label for="date">Select Date:</label>
+    <input type="date" id="date" name="date" required>
+    <button type="submit">Submit</button>
+  </form>
+
+  <% if (locals.newAppointment!= 'undefined')  { %></p>
+    <div class="alert alert-success" role="alert">
+        <%= 'New appointment  created !' %>
+    </div>
+<% } else if ( typeof(error) != 'undefined') { %>
+    <div class="alert alert-danger" role="alert">
+        <%= error %>
+    </div>
+<% } %>
+  
+  
+  
+  <% if (typeof appointments !== 'undefined' && appointments.length > 0) { %>
+    <h2>Available Time Slots:</h2>
+    <h3>Select slot to book an appointment</h3>
+    <ul>
+      <% appointments.forEach(appointment => { %>
+        <% if (appointment.isTimeSlotAvailable) { %>
+        <form action="/book-appointment" method="post">
+          <button type="submit"><%= appointment.time %><button>
+          <input type="hidden" name="appointmentId" value="<%= appointment._id %>">
+          <input type="hidden" name="appointmentTime" value="<%= appointment.time %>">
+          <input type="hidden" name="appointmentDate" value="<%= appointment.date %>">
+        </form>
+        <% } %>
+      <% }) %>
+    </ul>
+  <% } else { %>
+    <p>No available appointments for the selected date.</p>
+  <% } %>
+
+  
+
+                    
                 </div>
             </div>
         </div>
