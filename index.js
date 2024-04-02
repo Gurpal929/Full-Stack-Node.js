@@ -15,6 +15,7 @@ const G2_TestController = require('./controllers/G2_Test')
 const loginController = require('./controllers/login')
 const signupController = require('./controllers/signup')
 const updateCarDetailsController = require('./controllers/updateCarDetails')
+const {  addNewUser, findUser, signUp, loginUser} = require('./controllers/userController');
 
 
 //Connect to database
@@ -66,10 +67,10 @@ app.get("/G2", async (req, res) => {
   console.log("User" + user);
   console.log("License Number " + user.licenseNo);
   if (typeof user.licenseNo == "undefined") {
-    res.send("UserId Not Found" + userId);
+    res.render("G2_Test", { user: user});
+    // res.send("UserId Not Found" + userId);
   } else {
-    const selectedDate =
-      req.query.date || new Date().toISOString().split("T")[0];
+    const selectedDate = req.body.date || new Date().toISOString().split("T")[0];
     const appointments = await Appointment.find({
       date: new Date(selectedDate),
     });
@@ -110,19 +111,19 @@ app.get("/signup", (req, res) => {
 //8. Add new user on POST (Route to handle form submission and save user data)
 
 app.post("/add-new-user", async (req, res) => {
-  const userId = req.session.userId;
-  let user_old = await User.findOneAndUpdate({ _id: userId }, req.body);
-  let user_new = await User.findOne({ _id: userId });
-  res.render("G2_Test", user_new);
+  // const userId = req.session.userId;
+  // let user_old = await User.findOneAndUpdate({ _id: userId }, req.body);
+  // let user_new = await User.findOne({ _id: userId });
+  // res.render("G2_Test",  {user : user_new});
 });
 
 //9. Find user on GET (retrieve data from the database)
 app.get("/findUser", async (req, res) => {
-  console.log(`Finding license number ${req.query.licenseNo} ... `);
-  const result = await User.find({ licenseNo: req.query.licenseNo });
-  console.log(`Results found: ${result.length}`);
-  console.log(`Results: ${result}`);
-  res.render("G_Test", { result: result });
+  // console.log(`Finding license number ${req.query.licenseNo} ... `);
+  // const result = await User.find({ licenseNo: req.query.licenseNo });
+  // console.log(`Results found: ${result.length}`);
+  // console.log(`Results: ${result}`);
+  // res.render("G_Test", { result: result });
 });
 
 //10. update car details on GET
@@ -144,7 +145,7 @@ app.get("/updateCarDetails", async (req, res) => {
 //     selectedDate,
 //   });
 // });
-app.get('/appointment',appointmentController)
+app.get('/appointment', async (req, res) => appointmentController(req,res));
 
 //12.Update car details on POST (update database record)
 app.post("/updateCarDetails", async (req, res) => {
@@ -166,26 +167,27 @@ app.post("/updateCarDetails", async (req, res) => {
 
 //13. Signup
 app.post("/signupUser", async (req, res) => {
-  const isNewUser= false;
-  try {
-    const { username, password, userType } = req.body;
-    const existingUser = await User.findOne({ username });
-    if (existingUser) {
-      return res.status(400).json({ message: "Username already exists" });
-    }
+  // try {
+  //   const { username, password, userType } = req.body;
+  //   const existingUser = await User.findOne({ username });
+  //   if (existingUser) {
+  //     return res.status(400).json({ message: "Username already exists" });
+  //   }
 
-    const newUser = new User({ username, password, userType });
-    await newUser
-      .save()
-      .then((user) => res.render("login", { user: user } ))
-      .catch((err) => res.render("login", { error: err }));
-  } catch (error) {
-    console.error("Error signing up:", error);
-    res.status(500).json({ message: "An error occurred while signing up" });
-  }
+  //   const newUser = new User({ username, password, userType });
+  //   await newUser
+  //     .save()
+  //     .then((user) => res.render("login", { user: user ,isNewUser:true}))
+  //     .catch((err) => res.render("login", { error: err,isNewUser:false}));
+      
+  // } catch (error) {
+  //   console.error("Error signing up:", error);
+  //   res.status(500).json({ message: "An error occurred while signing up" });
+  // }
 });
 
 //14.Login
+app.post('/loginUser', async (req, res) => loginUser(req,res));
 // app.post("/loginUser", async (req, res) => {
 //   const { login_username, login_password } = req.body;
 //   let userLogin = false;
@@ -233,49 +235,49 @@ app.post("/signupUser", async (req, res) => {
 //     });
 //   }
 // });
-app.post("/loginUser", async (req, res) => {
-  const { login_username, login_password } = req.body;
-  let userLogin = false;
-  // Check if the user exists in the database
-  const user = await User.findOne({ username: login_username });
-  if (!user) {
-    res.locals.error = "Unsuccessful";
-    res.render("login", req.body);
-  } else {
-    // Load hash from your password DB.
-    bcrypt.compare(login_password, user.password, async function (err, result) {
-      if (!err) {
-        console.log(" Result " + result);
-        userLogin = result;
-      } else {
-        console.log(" Error " + err);
-      }
-      if (!userLogin) {
-        res.render("login", { ...req.body, error: "Unsuccessful" });
-      } else {
-        // User is logging in again
-        req.session.userId = user._id;
-        req.session.userType = user.userType;
-        const selectedDate =
-          req.query.date || new Date().toISOString().split("T")[0];
-        const appointments = await Appointment.find({ date: selectedDate });
-        const bookedSlots =
-        appointments.map((appointment) => appointment.time) || [];
-        console.log("Available slots:" + bookedSlots);
-        if (user.userType === "Driver") {
-          res.render("dashboard", { user: user });
-        } else if (user.userType === "Admin") {
-          console.log(user.userType);
-          res.render("appointment", { user: user, bookedSlots, selectedDate });
-        } else if (user.userType === "Examiner") {
-          res.render("", { user: user });
-        } else {
-          res.send("Account does not exist");
-        }
-      }
-    });
-  }
-});
+// app.post("/loginUser", async (req, res) => {
+  // const { login_username, login_password } = req.body;
+  // let userLogin = false;
+  // // Check if the user exists in the database
+  // const user = await User.findOne({ username: login_username });
+  // if (!user) {
+  //   res.locals.error = "Unsuccessful";
+  //   res.render("login", req.body);
+  // } else {
+  //   // Load hash from your password DB.
+  //   bcrypt.compare(login_password, user.password, async function (err, result) {
+  //     if (!err) {
+  //       console.log(" Result " + result);
+  //       userLogin = result;
+  //     } else {
+  //       console.log(" Error " + err);
+  //     }
+  //     if (!userLogin) {
+  //       res.render("login", { ...req.body, error: "Unsuccessful" });
+  //     } else {
+  //       // User is logging in again
+  //       req.session.userId = user._id;
+  //       req.session.userType = user.userType;
+  //       const selectedDate =
+  //         req.query.date || new Date().toISOString().split("T")[0];
+  //       const appointments = await Appointment.find({ date: selectedDate });
+  //       const bookedSlots =
+  //       appointments.map((appointment) => appointment.time) || [];
+  //       console.log("Available slots:" + bookedSlots);
+  //       if (user.userType === "Driver") {
+  //         res.render("dashboard", { user: user });
+  //       } else if (user.userType === "Admin") {
+  //         console.log(user.userType);
+  //         res.render("appointment", { user: user, bookedSlots, selectedDate });
+  //       } else if (user.userType === "Examiner") {
+  //         res.render("", { user: user });
+  //       } else {
+  //         res.send("Account does not exist");
+  //       }
+  //     }
+  //   });
+  // }
+// });
 
 //12.add-appointment
 
